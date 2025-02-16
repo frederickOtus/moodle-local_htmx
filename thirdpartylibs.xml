@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<libraries>
+  <library>
+    <location>htmx</location>
+    <name>htmx</name>
+    <description>htmx allows you to access AJAX, CSS Transitions, WebSockets and Server Sent Events directly in HTML, using attributes, so you can build modern user interfaces with the simplicity and power of hypertext</description>
+    <version>v2.0.4</version>
+    <license>Zero-Clause BSD</license>
+    <repository>https://github.com/bigskysoftware/htmx</repository>
+    <copyrights>
+    </copyrights>
+    <customised/>
+  </library>
+</libraries>
