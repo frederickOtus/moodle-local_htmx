@@ -27,5 +27,5 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'HTMX';
 
-$string['errormodal:title'] = 'An Error has occurred';
-$string['errormodal:body'] = 'There was an error communicating with the server. Please reloading the page and trying again.';
+$string['errormodal:title'] = 'An error has occurred';
+$string['errormodal:body'] = 'There was an error communicating with the server. Please reload the page and try again.';

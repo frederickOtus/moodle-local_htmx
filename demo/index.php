@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Demo index page.
+ *
+ * @package    local_htmx
+ * @copyright  2025 Peter Miller <pita.da.bread07@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 require_once('../../../config.php');
 
 global $PAGE, $OUTPUT;
@@ -25,7 +32,6 @@ $PAGE->set_context(context_system::instance());
 $url = new moodle_url('/local/htmx/demo/index.php');
 $PAGE->set_url($url);
 
-$user = \core_user::get_user($userid);
 $renderable = new \local_htmx\output\demo();
 
 echo $OUTPUT->header();
