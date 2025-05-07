@@ -1,52 +1,72 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Script to handle all incoming HTMX requests.
+ *
+ * @package    local_htmx
+ * @copyright  2025 Peter Miller <pita.da.bread07@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 // Default to no session locks for HTMX requests.
 define('READ_ONLY_SESSION', true);
 define('HTMX_REQUEST', true);
 
-/**
-* By default, moodle's paramter functions ONLY work for get and post paramters.
-* So, we can hack around this by deletcting the delete and put requests
-* that we want to support and manually decoding the request body and storing
-* it in $_POST where Moodle will find it.
-*/
-if($_SERVER['REQUEST_METHOD'] == 'DELETE' || $_SERVER['REQUEST_METHOD'] == 'PUT') {
+// By default, moodle's paramter functions ONLY work for get and post paramters.
+// So, we can hack around this by deletcting the delete and put requests
+// that we want to support and manually decoding the request body and storing
+// it in $_POST where Moodle will find it.
+if ($_SERVER['REQUEST_METHOD'] == 'DELETE' || $_SERVER['REQUEST_METHOD'] == 'PUT') {
     $data = [];
-    if($_SERVER['CONTENT_TYPE'] == 'application/x-www-form-urlencoded') {
+    if ($_SERVER['CONTENT_TYPE'] == 'application/x-www-form-urlencoded') {
         parse_str(file_get_contents("php://input"), $data);
-    }else if($_SERVER['CONTENT_TYPE'] == 'application/json') {
+    } else if ($_SERVER['CONTENT_TYPE'] == 'application/json') {
         $data = json_decode(file_get_contents("php://input"), true);
     }
 
-    if(is_array($data) && !empty($data)) {
+    if (is_array($data) && !empty($data)) {
         $_POST = $data;
     }
 }
 
 require_once('../../config.php');
 
-// Extract out correct HTMX object:
+// Extract out correct HTMX object.
 $pathinfo = $_SERVER['PATH_INFO'];
-try{
-    $htmx_handler = \local_htmx\local\base_handler::get_instance($pathinfo);
+try {
+    $htmxhandler = \local_htmx\local\base_handler::get_instance($pathinfo);
 
-    if(empty($htmx_handler)) {
+    if (empty($htmxhandler)) {
         header("HTTP/1.0 404 Not Found");
         exit();
     }
 
-    if(!$htmx_handler->read_only_session()) {
+    if (!$htmxhandler->read_only_session()) {
         \core\session\manager::restart_with_write_lock(false);
     }
 
     $url = new moodle_url($SCRIPT . $pathinfo);
 
-    $PAGE->set_context($htmx_handler->get_context());
+    $PAGE->set_context($htmxhandler->get_context());
     $PAGE->set_url($url);
 
-    if($htmx_handler->login_required()) {
-        $course = $htmx_handler->get_course_id();
-        $cm = $htmx_handler->get_cm();
+    if ($htmxhandler->login_required()) {
+        $course = $htmxhandler->get_course_id();
+        $cm = $htmxhandler->get_cm();
         try {
             require_login(
                 courseorid: $course,
@@ -55,22 +75,22 @@ try{
                 preventredirect: true,
             );
 
-            $context = $htmx_handler->get_context();
-            foreach($htmx_handler->required_capabilities() as $cap) {
+            $context = $htmxhandler->get_context();
+            foreach ($htmxhandler->required_capabilities() as $cap) {
                 require_capability($cap, $context);
             }
-        }catch(moodle_exception | required_capability_exception $e) {
+        } catch (moodle_exception | required_capability_exception $e) {
             header("HTTP/1.0 403 Forbidden");
             exit();
         }
-    }else {
-        if(!empty($htmx_handler->required_capabilities())) {
+    } else {
+        if (!empty($htmxhandler->required_capabilities())) {
             throw new coding_exception("Handler has required capabilities but login is not required.");
         }
     }
 
-    echo $htmx_handler->render();
-}catch(Throwable $e){
+    echo $htmxhandler->render();
+} catch (Throwable $e) {
     header("HTTP/1.0 500 Internal Server Error");
     $debug = false;
     if (!empty($CFG->debugusers) && $USER) {
@@ -80,18 +100,18 @@ try{
 
     $debug = $debug || (!empty($CFG->debug) && $CFG->debug > 0);
 
-    if($debug) {
+    if ($debug) {
         echo $e->getFile() . ": " . $e->getLine() . "\n";
         echo $e->getMessage() . "\n";
-        $extra_properties = [
+        $extraproperties = [
             'errorcode',
             'module',
             'debuginfo',
         ];
 
-        if(is_object($e)) {
-            foreach($extra_properties as $prop) {
-                if(property_exists($e, $prop)) {
+        if (is_object($e)) {
+            foreach ($extraproperties as $prop) {
+                if (property_exists($e, $prop)) {
                     echo "$prop: " . $e->$prop . "\n";
                 }
             }

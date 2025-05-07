@@ -1,20 +1,45 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace local_htmx\local;
 
 use cm_info;
-use context;
+use core\context;
 
+/**
+ * Base HTMX request handler.
+ *
+ * @package    local_htmx
+ * @copyright  2025 Peter Miller <pita.da.bread07@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 abstract class base_handler {
 
     /**
-     * Controls the behavior of login_required. You can either change this in a subclass, or overload the method for more complex logic.
+     * Controls the behavior of login_required. You can either change this in a subclass
+     * or overload the method for more complex logic.
+     *
      * @var bool
      */
     const LOGIN_REQUIRED = true;
 
     /**
-     * Controls the behavior of read_only_session. You can either change this in a subclass, or overload the method for more complex logic.
+     * Controls the behavior of read_only_session. You can either change this in a subclass
+     * or overload the method for more complex logic.
+     *
      * @var bool
      */
     const READ_ONLY_SESSION = true;
@@ -24,7 +49,7 @@ abstract class base_handler {
      *
      * @return bool
      */
-    public function login_required() : bool {
+    public function login_required(): bool {
         return static::LOGIN_REQUIRED;
     }
 
@@ -33,7 +58,7 @@ abstract class base_handler {
      *
      * @return bool
      */
-    public function read_only_session() : bool {
+    public function read_only_session(): bool {
         return static::READ_ONLY_SESSION;
     }
 
@@ -46,7 +71,7 @@ abstract class base_handler {
      *
      * @return array
      */
-    abstract public function required_capabilities() : array;
+    abstract public function required_capabilities(): array;
 
     /**
      * Used by the HTMX controller to pass to require_login.
@@ -54,36 +79,38 @@ abstract class base_handler {
      *
      * @return ?cm_info
      */
-    abstract function get_cm() : ?cm_info;
+    abstract public function get_cm(): ?cm_info;
 
     /**
      * Used by the HTMX controller to pass to require_login.
      *
      * @return int
      */
-    abstract public function get_course_id() : int;
+    abstract public function get_course_id(): int;
 
     /**
      * Render output for this handler.
-     * 
+     *
      * @return string
      */
-    abstract public function render() : string;
+    abstract public function render(): string;
 
     /**
      * Returns the context for this handler.
      *
      * @return \context
      */
-    abstract public function get_context() : context;
-
+    abstract public function get_context(): context;
 
     /**
      * Attempts to autoload a handler class based on the path_info.
+     *
+     * @param string $pathinfo
+     * @return ?base_handler
      */
-    public static function get_instance($path_info) : ?base_handler {
-        $parts = explode('/', $path_info);
-        if(sizeof($parts) < 3) {
+    public static function get_instance($pathinfo): ?base_handler {
+        $parts = explode('/', $pathinfo);
+        if (count($parts) < 3) {
             return null;
         }
 
@@ -91,9 +118,9 @@ abstract class base_handler {
         $name = array_slice($parts, 2);
         $fullname = "$component\\htmx\\" . implode('\\', $name);
 
-        if(!class_exists($fullname)) {
+        if (!class_exists($fullname)) {
             return null;
-        }else {
+        } else {
             $handler = new $fullname();
             return $handler;
         }

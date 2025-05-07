@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - https://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,32 +12,21 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
-
-namespace local_htmx\output;
-
-use core\output\templatable;
-use core\output\renderable;
-use core\output\renderer_base;
-use stdClass;
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Output class for demo HTMX endpoint.
+ * Hook callbacks for HTMX
  *
  * @package    local_htmx
- * @copyright  2025 Peter Miller <pita.da.bread07@gmail.com>
+ * @copyright  2025 Sam Smucker <sam.smucker@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class demo implements templatable, renderable {
 
-    /**
-     * Export for template.
-     *
-     * @param renderer_base $output
-     * @return stdClass
-     */
-    public function export_for_template(renderer_base $output) {
-        return new stdClass();
-    }
-}
+defined('MOODLE_INTERNAL') || die();
 
+$callbacks = [
+    [
+        'hook' => \core\hook\output\before_standard_head_html_generation::class,
+        'callback' => [\local_htmx\hook\before_standard_head_html_generation::class, 'inject_htmx'],
+    ],
+];
