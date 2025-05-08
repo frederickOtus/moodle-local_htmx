@@ -1,12 +1,8 @@
 /**
- * Prepend the local_htmx request root to HTMX requests
- * that don't already have it.
+ * Route requests to local_htmx serve.php.
  */
 htmx.on('htmx:configRequest', e => {
-    if (!e.detail.path.includes('/local/htmx/serve.php')) {
-        e.detail.path.replace(/^\//, '');
-        e.detail.path = `/local/htmx/serve.php/${e.detail.path}`;
-    }
+    e.detail.path = window.location.origin + '/local/htmx/serve.php/' + e.detail.path;
 });
 
 /**

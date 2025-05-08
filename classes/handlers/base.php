@@ -14,10 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace local_htmx\local;
+namespace local_htmx\handlers;
 
 use cm_info;
 use core\context;
+use core\exception\coding_exception;
 
 /**
  * Base HTMX request handler.
@@ -26,7 +27,7 @@ use core\context;
  * @copyright  2025 Peter Miller <pita.da.bread07@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class base_handler {
+abstract class base {
 
     /**
      * Controls the behavior of login_required. You can either change this in a subclass
@@ -108,20 +109,18 @@ abstract class base_handler {
      * @param string $pathinfo
      * @return ?base_handler
      */
-    public static function get_instance($pathinfo): ?base_handler {
+    public static function get_instance($pathinfo): ?self {
+        // Convert forward slashes to back slashes.
         $parts = explode('/', $pathinfo);
-        if (count($parts) < 3) {
-            return null;
-        }
+        $classname = "\\" . implode('\\', array_slice($parts, 1));
 
-        $component = $parts[1];
-        $name = array_slice($parts, 2);
-        $fullname = "$component\\htmx\\" . implode('\\', $name);
-
-        if (!class_exists($fullname)) {
+        if (!class_exists($classname)) {
             return null;
         } else {
-            $handler = new $fullname();
+            if (!is_subclass_of($classname, self::class)) {
+                throw new coding_exception("Class $classname is not a subclass of " . self::class);
+            }
+            $handler = new $classname();
             return $handler;
         }
     }

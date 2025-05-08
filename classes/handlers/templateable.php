@@ -14,9 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace local_htmx\local;
+namespace local_htmx\handlers;
 
-use local_htmx\local\base_handler;
 use core\output\named_templatable;
 use core\output\renderable;
 use core\output\renderer_base;
@@ -28,7 +27,7 @@ use core\output\renderer_base;
  * @copyright  2025 Peter Miller <pita.da.bread07@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class templateable_handler extends base_handler implements named_templatable, renderable {
+abstract class templateable extends base implements named_templatable, renderable {
 
     /**
      * Render HTMX response.
@@ -46,7 +45,7 @@ abstract class templateable_handler extends base_handler implements named_templa
 
     /**
      *  Get name of template to load. By default, this be driven off class name.
-     *  For example: component_foo\htmx\bar will load template component_foo\htmx\bar.
+     *  For example: component_foo\htmx\bar will load template component_foo/htmx/bar.
      *
      * @param renderer_base $renderer
      * @return string

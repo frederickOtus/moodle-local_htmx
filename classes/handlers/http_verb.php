@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace local_htmx\local;
+namespace local_htmx\handlers;
 
 use core\exception\coding_exception;
 use core\output\renderer_base;
@@ -27,7 +27,7 @@ use stdClass;
  * @copyright  2025 Peter Miller <pita.da.bread07@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class verb_handler extends templateable_handler {
+abstract class http_verb extends templateable {
 
     /**
      * GET endpoint.

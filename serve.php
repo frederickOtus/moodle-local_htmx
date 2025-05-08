@@ -48,7 +48,7 @@ require_once('../../config.php');
 // Extract out correct HTMX object.
 $pathinfo = $_SERVER['PATH_INFO'];
 try {
-    $htmxhandler = \local_htmx\local\base_handler::get_instance($pathinfo);
+    $htmxhandler = \local_htmx\handlers\base::get_instance($pathinfo);
 
     if (empty($htmxhandler)) {
         header("HTTP/1.0 404 Not Found");

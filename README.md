@@ -1,8 +1,26 @@
 # HTMX #
 
-TODO Describe the plugin shortly here.
+## What is HTMX? ##
 
-TODO Provide more detailed description here.
+The core functionality of HTMX:
+- allows you to add hypermedia controls to all HTML elements
+- allows hypermedia controls to reload parts of the page without a full page reload
+
+If this is your first exposure to HTMX, I recommend reading the following articles:
+- [HATEOS](https://htmx.org/essays/hateoas/)
+- [Locality of Behavior](https://htmx.org/essays/locality-of-behavior/)
+- [Hypermedia-Driven Applications](https://htmx.org/essays/hypermedia-driven-apps/)
+
+And of course, the [HTMX documentation](https://htmx.org/docs/).
+
+To see some examples of this plugin in action, check out the [demo branch](https://github.com/frederickOtus/moodle-local_htmx/tree/demos)
+
+## What is this plugin? ##
+
+This plugin:
+- Loads the HTMX library onto every page
+- Adds a modal popup for HTMX requests that return 4XX or 5XX errors
+- Adds an opinionated way for responding to HTMX requests
 
 ## Installing via uploaded ZIP file ##
 
