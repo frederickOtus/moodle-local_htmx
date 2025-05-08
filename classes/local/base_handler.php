@@ -18,6 +18,7 @@ namespace local_htmx\local;
 
 use cm_info;
 use core\context;
+use core\exception\coding_exception;
 
 /**
  * Base HTMX request handler.
@@ -109,19 +110,17 @@ abstract class base_handler {
      * @return ?base_handler
      */
     public static function get_instance($pathinfo): ?base_handler {
+        // Convert forward slashes to back slashes.
         $parts = explode('/', $pathinfo);
-        if (count($parts) < 3) {
-            return null;
-        }
+        $classname = "\\" . implode('\\', array_slice($parts, 1));
 
-        $component = $parts[1];
-        $name = array_slice($parts, 2);
-        $fullname = "$component\\htmx\\" . implode('\\', $name);
-
-        if (!class_exists($fullname)) {
+        if (!class_exists($classname)) {
             return null;
         } else {
-            $handler = new $fullname();
+            if (!is_subclass_of($classname, base_handler::class)) {
+                throw new coding_exception("Class $classname is not a subclass of " . base_handler::class);
+            }
+            $handler = new $classname();
             return $handler;
         }
     }
