@@ -2,13 +2,13 @@
 
 namespace local_htmx\htmx;
 
-use local_htmx\local\templateable_handler;
+use local_htmx\handlers\templateable;
 use cm_info;
-use context;
-use context_system;
-use renderer_base;
+use core\context;
+use core\context\system as context_system;
+use core\output\renderer_base;
 
-class force_error extends templateable_handler {
+class force_error extends templateable {
     public function required_capabilities(): array
     {
         return [];
