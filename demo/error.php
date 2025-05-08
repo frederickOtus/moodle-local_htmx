@@ -1,3 +1,4 @@
+<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -14,27 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Modal triggered on HTMX error responses.
+ * Demonstration of error handling with HTMX.
  *
- * @module     local_htmx/error_modal
- * @copyright  2025 Peter Miller <pita.da.bread07@moodle.com>
+ * @package    local_htmx
+ * @copyright  2025 Sam Smucker <sam.smucker@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+require_once('../../../config.php');
 
-import ModalFactory from 'core/modal_factory';
-import {get_string as getString} from 'core/str';
+global $PAGE, $OUTPUT;
 
-export const init = async () => {
-    const modal = await ModalFactory.create({
-        type: ModalFactory.types.CANCEL,
-        title: getString('errormodal:title', 'local_htmx'),
-        body: getString('errormodal:body', 'local_htmx'),
-    });
+require_login(SITEID);
 
-    htmx.on("htmx:responseError", function (evt) {
-        modal.show();
-        window.console.error("Error response", evt);
-    });
+$PAGE->set_context(context_system::instance());
 
-    document.body.dispatchEvent(new CustomEvent('local_htmx:errorModalReady'));
-};
+$url = new moodle_url('/local/htmx/demo/error.php');
+$PAGE->set_url($url);
+
+$renderable = new \local_htmx\output\error();
+
+echo $OUTPUT->header();
+echo $OUTPUT->render($renderable);
+echo $OUTPUT->footer();
