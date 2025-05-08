@@ -30,7 +30,7 @@ class before_standard_head_html_generation {
     public static function inject_htmx(): void {
         global $PAGE;
         $PAGE->requires->js(new \moodle_url('/local/htmx/htmx/htmx.min.js'));
-        $PAGE->requires->js(new \moodle_url('/local/htmx/htmx/configureRequestPaths.js'));
+        $PAGE->requires->js(new \moodle_url('/local/htmx/htmx/htmxUtils.js'));
         $PAGE->requires->js_call_amd('local_htmx/error_modal', 'init');
     }
 }
