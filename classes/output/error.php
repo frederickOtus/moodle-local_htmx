@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,25 +12,32 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-namespace local_htmx\hook;
+namespace local_htmx\output;
+
+use core\output\templatable;
+use core\output\renderable;
+use core\output\renderer_base;
+use stdClass;
 
 /**
- * Class before_standard_head_html_generation
+ * Output class for error demo HTMX endpoint.
  *
  * @package    local_htmx
- * @copyright  2025 Sam Smucker <sam.smucker@moodle.com>
+ * @copyright  2025 Sam Smucker <sam.smucker@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class before_standard_head_html_generation {
+class error implements templatable, renderable {
+
     /**
-     * Require HTMX library JS.
+     * Export for template.
+     *
+     * @param renderer_base $output
+     * @return stdClass
      */
-    public static function inject_htmx(): void {
-        global $PAGE;
-        $PAGE->requires->js(new \moodle_url('/local/htmx/htmx/htmx.min.js'));
-        $PAGE->requires->js(new \moodle_url('/local/htmx/htmx/htmxUtils.js'));
-        $PAGE->requires->js_call_amd('local_htmx/error_modal', 'init');
+    public function export_for_template(renderer_base $output) {
+        return new stdClass();
     }
 }
+

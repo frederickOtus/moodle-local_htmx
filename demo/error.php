@@ -14,23 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace local_htmx\hook;
-
 /**
- * Class before_standard_head_html_generation
+ * Demonstration of error handling with HTMX.
  *
  * @package    local_htmx
  * @copyright  2025 Sam Smucker <sam.smucker@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class before_standard_head_html_generation {
-    /**
-     * Require HTMX library JS.
-     */
-    public static function inject_htmx(): void {
-        global $PAGE;
-        $PAGE->requires->js(new \moodle_url('/local/htmx/htmx/htmx.min.js'));
-        $PAGE->requires->js(new \moodle_url('/local/htmx/htmx/htmxUtils.js'));
-        $PAGE->requires->js_call_amd('local_htmx/error_modal', 'init');
-    }
-}
+require_once('../../../config.php');
+
+global $PAGE, $OUTPUT;
+
+require_login(SITEID);
+
+$PAGE->set_context(context_system::instance());
+
+$url = new moodle_url('/local/htmx/demo/error.php');
+$PAGE->set_url($url);
+
+$renderable = new \local_htmx\output\error();
+
+echo $OUTPUT->header();
+echo $OUTPUT->render($renderable);
+echo $OUTPUT->footer();

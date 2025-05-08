@@ -4,9 +4,9 @@ namespace local_htmx\htmx;
 
 use local_htmx\local\templateable_handler;
 use cm_info;
-use context;
+use core\context;
 use context_system;
-use renderer_base;
+use core\output\renderer_base;
 
 class hello extends templateable_handler {
     public function required_capabilities(): array
