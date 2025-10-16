@@ -1,4 +1,3 @@
-<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -14,24 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace local_htmx\hook;
-
 /**
- * Class before_standard_head_html_generation
+ * Process HTMX attributes on content added to the DOM after the
+ * initial page load. This will process anything that dispatches
+ * a filterContentUpdated event.
  *
- * @package    local_htmx
- * @copyright  2025 Sam Smucker <sam.smucker@moodle.com>
+ * @module     local_htmx/process_new_content
+ * @copyright  2025 Sam Smucker
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class before_standard_head_html_generation {
-    /**
-     * Require HTMX library JS.
-     */
-    public static function inject_htmx(): void {
-        global $PAGE;
-        $PAGE->requires->js(new \moodle_url('/local/htmx/htmx/htmx.min.js'), inhead: true);
-        $PAGE->requires->js(new \moodle_url('/local/htmx/htmx/htmxUtils.js'), inhead: true);
-        $PAGE->requires->js_call_amd('local_htmx/error_modal', 'init');
-        $PAGE->requires->js_call_amd('local_htmx/process_new_content', 'init');
-    }
-}
+
+import { eventTypes } from 'core_filters/events';
+
+export const init = () => {
+    document.addEventListener(eventTypes.filterContentUpdated, event => {
+        if (typeof htmx === 'undefined') {
+            return;
+        }
+        event.detail.nodes.forEach(node => {
+            htmx.process(node);
+        });
+    });
+};
