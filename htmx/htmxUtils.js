@@ -31,3 +31,20 @@ document.body.addEventListener('local_htmx:errorModalReady', () => {
     }
     delete window.htmxErrorBuffer;
 });
+
+/**
+ * Use a mutation observer to process HTMX attributes on elements added
+ * to the DOM after page load.
+ */
+const config = { childList: true, subtree: true };
+const callback = (mutationList) => {
+    for (const mutation of mutationList) {
+        for (const addedNode of mutation.addedNodes) {
+            if (typeof htmx !== 'undefined') {
+                htmx.process(addedNode);
+            }
+        }
+    }
+};
+const observer = new MutationObserver(callback);
+observer.observe(document.querySelector('body'), config);
