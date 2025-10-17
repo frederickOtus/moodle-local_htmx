@@ -89,7 +89,19 @@ try {
         }
     }
 
-    echo $htmxhandler->render();
+    if ($htmxhandler::INCLUDE_REQUIRED_JS) {
+        // Call the header() method to force the page to set up its requirements manager.
+        $OUTPUT->header();
+        $PAGE->start_collecting_javascript_requirements();
+        $html = $htmxhandler->render();
+        $jsfooter = $PAGE->requires->get_end_code();
+        echo $OUTPUT->render_from_template('local_htmx/html_with_required_js', [
+            'html' => $html,
+            'js' => $jsfooter,
+        ]);
+    } else {
+        echo $htmxhandler->render();
+    }
 } catch (Throwable $e) {
     header("HTTP/1.0 500 Internal Server Error");
     $debug = false;

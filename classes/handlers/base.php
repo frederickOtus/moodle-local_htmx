@@ -46,6 +46,15 @@ abstract class base {
     const READ_ONLY_SESSION = true;
 
     /**
+     * Controls whether to include Javascript collected by the page requirements manager
+     * during this handler's render() method in the response. If set to true, Javascript
+     * code will be swapped out of band to the end of the body tag.
+     *
+     * @var bool
+     */
+    const INCLUDE_REQUIRED_JS = false;
+
+    /**
      * If the user must be logged in to access this endpoint.
      *
      * @return bool
